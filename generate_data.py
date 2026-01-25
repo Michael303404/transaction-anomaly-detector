@@ -6,9 +6,9 @@ from datetime import timedelta
 # --- config ---
 num_records = 1000
 output_file = 'transactions.csv'
-dormancy_threshold = 30 # должно совпадать с config.py
-risky_categories = ['online_gambling', 'crypto_exchange', 'adult_services'] # должно совпадать с config.py
-suspicious_ips = ['138.197.10.1', '104.248.60.2', '64.227.100.5'] # должно совпадать с config.py
+dormancy_threshold = 30  # must match config.py
+risky_categories = ['online_gambling', 'crypto_exchange', 'adult_services']  # must match config.py
+suspicious_ips = ['138.197.10.1', '104.248.60.2', '64.227.100.5']  # must match config.py
 
 # --- setup ---
 fake = Faker()
@@ -20,7 +20,7 @@ for i in range(num_records):
     user_id = fake.uuid4()
     last_login = fake.date_time_between(start_date='-1y', end_date='now')
     
-    # ~10% шанс на "подозрительную" транзакцию
+    # ~10% chance of a "suspicious" transaction
     is_alert_candidate = np.random.choice([True, False], p=[0.1, 0.9])
     
     if is_alert_candidate:
@@ -34,12 +34,12 @@ for i in range(num_records):
             transaction_time = last_login + timedelta(days=np.random.randint(1, 5))
             category = np.random.choice(risky_categories)
             ip = fake.ipv4()
-        else: # ip
+        else:  # ip
             transaction_time = last_login + timedelta(days=np.random.randint(1, 5))
             category = 'groceries'
             ip = np.random.choice(suspicious_ips)
     else:
-        # нормальная транзакция
+        # normal transaction
         transaction_time = last_login + timedelta(days=np.random.randint(1, 5))
         category = np.random.choice(['groceries', 'restaurants', 'utilities', 'shopping', 'transport'])
         ip = fake.ipv4()
@@ -55,7 +55,7 @@ for i in range(num_records):
     })
 
 df = pd.DataFrame(data)
-# форматируем даты для консистентности
+# format dates for consistency
 df['transaction_date'] = df['transaction_date'].dt.strftime('%Y-%m-%d %H:%M:%S')
 df['last_login_date'] = df['last_login_date'].dt.strftime('%Y-%m-%d %H:%M:%S')
 
